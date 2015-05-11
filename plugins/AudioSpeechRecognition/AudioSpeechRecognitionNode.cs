@@ -39,22 +39,24 @@ namespace VVVV.Nodes
 	public class AudioSpeechRecognitionNode : IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
 	{
 		#region fields & pins
-        //[Input("Choices", IsPinGroup = true)]
-        //public IDiffSpread<ISpread<string>> FChoices;
-        public Spread<IIOContainer<ISpread<string>>> FChoices = new Spread<IIOContainer<ISpread<string>>>();
-        public Spread<IIOContainer<ISpread<int>>> FRepetitionsNumber = new Spread<IIOContainer<ISpread<int>>>();
-
-        [Config("Choices Count", DefaultValue = 1, MinValue = 1)]
-        public IDiffSpread<int> FChoicesCount;        
-
-        [Input("Culture Name", IsSingle = true, DefaultString = "en-US", Order = 1)]
-        IDiffSpread<string> FCultureName;
 
         [Input("Enabled", IsSingle = true, DefaultBoolean = true, Order = 0)]
         IDiffSpread<bool> FEnabled;
 
-        [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.5, Order = 2)]
+        [Input("Culture Name", IsSingle = true, DefaultString = "en-US", Order = 1)]
+        IDiffSpread<string> FCultureName;
+
+        [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.7, Order = 2)]
         IDiffSpread<double> FConfidenceThreshold;
+
+        //[Input("Choices", IsPinGroup = true)]
+        //public IDiffSpread<ISpread<string>> FChoices;
+
+        public Spread<IIOContainer<ISpread<string>>> FChoices = new Spread<IIOContainer<ISpread<string>>>();
+        public Spread<IIOContainer<ISpread<bool>>> FIsOptional = new Spread<IIOContainer<ISpread<bool>>>();
+
+        [Config("Choices Count", DefaultValue = 1, MinValue = 1)]
+        public IDiffSpread<int> FChoicesCount;        
 
         // TODO
         //[Output("Choices indices", IsPinGroup = true, Order = 4)]
@@ -63,14 +65,14 @@ namespace VVVV.Nodes
         [Output("Recognition Result", IsSingle = true)]
 		public ISpread<String> FRecognitionResult;
 
+        [Output("On Recognized", IsSingle = true, IsBang = true)]
+        public ISpread<bool> FOnRecognized;
+
         [Output("Confidence", IsSingle = true)]
         public ISpread<double> FConfidence;
 
         [Output("On Speech Detected", IsSingle = true, IsToggle = true)]
         public ISpread<bool> FOnSpeechDetected;
-
-        [Output("On Recognized", IsSingle = true, IsBang = true)]
-        public ISpread<bool> FOnRecognized;
 
         [Output("Recognizer for culture found", IsSingle = true, IsToggle = true)]
         public ISpread<bool> FRecognizerForCultureFound;
@@ -83,6 +85,7 @@ namespace VVVV.Nodes
         [Import] ///!!!
         public IIOFactory FIOFactory;
 
+        private int choicesOrderOffset = 3;
         // Speech recognition engine 
         private SpeechRecognitionEngine recognizer = null;
         // Currently loaded grammar
@@ -119,18 +122,30 @@ namespace VVVV.Nodes
             );
         }
 
-        InputAttribute createInputAttributeWithChangeCheck(int i)
+        InputAttribute createChoicesInputAttributeWithChangeCheck(int i)
         {
             var ia = new InputAttribute(string.Format("Choices {0}", i));
-            ia.CheckIfChanged = false;
+            ia.CheckIfChanged = true;
+            ia.Order = choicesOrderOffset + i * 2;
+            return ia;
+        }
+
+        InputAttribute createIsOptionalInputAttributeWithChangeCheck(int i)
+        {
+            // http://vvvv.org/pluginspecs/html/AllMembers_T_VVVV_PluginInterfaces_V2_InputAttribute.htm#propertyTableToggle
+            var ia = new InputAttribute(string.Format("Is Optional {0}", i));
+            ia.CheckIfChanged = true;
+            ia.Order = choicesOrderOffset + i * 2 + 1;
+            ia.DefaultBoolean = false;
+            ia.Visibility = PinVisibility.OnlyInspector; // OnlyInspector/Hidden
             return ia;
         }
 
         private void HandleInputCountChanged(IDiffSpread<int> sender)
         {
             //HandlePinCountChanged(sender, FChoices, (i) => new InputAttribute(string.Format("Choices {0}", i)));
-            HandlePinCountChanged(sender, FChoices, createInputAttributeWithChangeCheck);
-            HandlePinCountChanged(sender, FRepetitionsNumber, (i) => new InputAttribute(string.Format("Repetitions Number {0}", i)));
+            HandlePinCountChanged(sender, FChoices, createChoicesInputAttributeWithChangeCheck);
+            HandlePinCountChanged(sender, FIsOptional, createIsOptionalInputAttributeWithChangeCheck);
         }
         #endregion
 
@@ -318,7 +333,7 @@ namespace VVVV.Nodes
         //    startRecognition();
         //}
 
-        void setGrammar(string[][] choicesStringsArray, string cultureName)
+        void setGrammar(string[][] choicesStringsArray, bool[] isOptionalArray, string cultureName)
         {
             // Unload the old (current) grammar
             unloadCurrentGrammar();
@@ -346,20 +361,24 @@ namespace VVVV.Nodes
             bool grammarNotEmpty = false;
 
             // Append all choices strings to the new grammar
-            foreach (string[] choicesStrings in choicesStringsArray)
+            for (int i = 0; i < choicesStringsArray.Length; ++i)
             {
+                string[] choicesStrings = choicesStringsArray[i];
+                bool isOptional = isOptionalArray[i];
+
                 try
                 {
+                    int min = isOptional ? 0 : 1, max = 1;
                     if (choicesStrings.Length > 1)
                     {
                         // Set of choices
                         Choices choices = new Choices(choicesStrings);
-                        grammarBuilder.Append(choices);    
+                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat : min, maxRepeat : max);    
                     }
                     else
                     {
                         // A single phrase
-                        grammarBuilder.Append(choicesStrings[0]);
+                        grammarBuilder.Append(choicesStrings[0], minRepeat : min, maxRepeat : max);
                     }
                     // Now we have at least one element in the grammar
                     grammarNotEmpty = true;
@@ -464,52 +483,61 @@ namespace VVVV.Nodes
             // FIXME: this is always being executed :(
             // Manual check of array equality?
             //if (FChoices.IsChanged)
-            bool changedAtLeastOneChoices = false;
+            bool grammarChanged = false;
+            int numChoices = FChoicesCount[0];
+            for (int i = 0; i < numChoices; ++i)
             {
-                int numChoices = FChoicesCount[0];
+                var choicesSpread = FChoices[i].IOObject;
+                var isOptionalSpread = FIsOptional[i].IOObject;
+
+                if (choicesSpread.IsChanged || isOptionalSpread.IsChanged)
+                {
+                    grammarChanged = true;
+                    break;
+                }
+            }
+            if (grammarChanged)
+            {
                 // Convert spread to array
-                string[][] choicesStringsArray = new string[FChoices.SliceCount][];
+                string[][] choicesStringsArray = new string[numChoices][];
+                bool[] isOptionalArray = new bool[numChoices];
                 for (int i = 0; i < numChoices; ++i)
                 {
                     var choicesSpread = FChoices[i].IOObject;
-                    if (choicesSpread.IsChanged)
-                    {
-                        changedAtLeastOneChoices = true;
-                    }
                     choicesStringsArray[i] = new string[choicesSpread.SliceCount];
                     for (int j = 0; j < choicesSpread.SliceCount; ++j)
                     {
                         choicesStringsArray[i][j] = choicesSpread[j];
                     }
+
+                    var isOptionalSpread = FIsOptional[i].IOObject;
+                    isOptionalArray[i] = isOptionalSpread[i];
                 }
 
-                if (changedAtLeastOneChoices)
+                if (recognizer != null)
                 {
-                    if (recognizer != null)
+                    // Try to load grammar
+                    setGrammar(choicesStringsArray, isOptionalArray, FCultureName[0]);
+                }
+                else
+                {
+                    if (FLogger != null)
                     {
-                        // Try to load grammar
-                        setGrammar(choicesStringsArray, FCultureName[0]);
+                        FLogger.Log(LogType.Error,
+                                    "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
                     }
-                    else
-                    {
-                        if (FLogger != null)
-                        {
-                            FLogger.Log(LogType.Error,
-                                        "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
-                        }
-                    }
+                }
 
-                    // Update "grammar loaded" output pin value 
-                    FGrammarLoaded[0] = isGrammarLoaded();
+                // Update "grammar loaded" output pin value 
+                FGrammarLoaded[0] = isGrammarLoaded();
 
-                    if (FEnabled[0] == true)
-                    {
-                        startSpeechRecognition();
-                    }
+                if (FEnabled[0] == true)
+                {
+                    startSpeechRecognition();
                 }
             }
 
-            if (FEnabled.IsChanged || FCultureName.IsChanged || changedAtLeastOneChoices)
+            if (FEnabled.IsChanged || FCultureName.IsChanged || grammarChanged)
             {
                 // Reset main output pins
                 FRecognitionResult[0] = "";
