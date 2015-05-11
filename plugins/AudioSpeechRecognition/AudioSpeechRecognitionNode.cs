@@ -28,23 +28,25 @@ using Microsoft.Speech.Recognition;
 
 namespace VVVV.Nodes
 {
-	#region PluginInfo
-	[PluginInfo(Name = "SpeechRecognition",
+    #region PluginInfo
+    [PluginInfo(Name = "SpeechRecognition",
                 Category = "Microsoft Speech Platform",
                 Version = "Predefined Grammar",
                 Help = "Speech recognition for different languages with configurable predefined grammar",
                 Tags = "speech",
                 Author = "lev")]
-	#endregion PluginInfo
-	public class AudioSpeechRecognitionNode : IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
-	{
-		#region fields & pins
+    #endregion PluginInfo
+    public class AudioSpeechRecognitionNode : IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
+    {
+        #region fields & pins
 
         [Input("Enabled", IsSingle = true, DefaultBoolean = true, Order = 0)]
         IDiffSpread<bool> FEnabled;
 
-        [Input("Culture Name", IsSingle = true, DefaultString = "en-US", Order = 1)]
-        IDiffSpread<string> FCultureName;
+        //[Input("Culture Name", IsSingle = true, DefaultString = "en-US", Order = 1)]
+        //IDiffSpread<string> FCultureName;
+        [Input("Culture Name", EnumName = "CultureNameEnum")]
+        public IDiffSpread<EnumEntry> FCultureNameEnum;
 
         [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.7, Order = 2)]
         IDiffSpread<double> FConfidenceThreshold;
@@ -56,14 +58,14 @@ namespace VVVV.Nodes
         public Spread<IIOContainer<ISpread<bool>>> FIsOptional = new Spread<IIOContainer<ISpread<bool>>>();
 
         [Config("Choices Count", DefaultValue = 1, MinValue = 1)]
-        public IDiffSpread<int> FChoicesCount;        
+        public IDiffSpread<int> FChoicesCount;
 
         // TODO
         //[Output("Choices indices", IsPinGroup = true, Order = 4)]
         //ISpread<ISpread<string>> FChoices;
 
         [Output("Recognition Result", IsSingle = true)]
-		public ISpread<String> FRecognitionResult;
+        public ISpread<String> FRecognitionResult;
 
         [Output("On Recognized", IsSingle = true, IsBang = true)]
         public ISpread<bool> FOnRecognized;
@@ -80,8 +82,8 @@ namespace VVVV.Nodes
         [Output("Grammar Loaded", IsSingle = true, IsToggle = true)]
         public ISpread<bool> FGrammarLoaded;
 
-		[Import()]
-		public ILogger FLogger;
+        [Import()]
+        public ILogger FLogger;
         [Import] ///!!!
         public IIOFactory FIOFactory;
 
@@ -101,7 +103,7 @@ namespace VVVV.Nodes
         }
         private Object startRecognitionLock = new Object();
         private Object asyncActionMonitor = new Object();
-		#endregion fields & pins
+        #endregion fields & pins
 
         #region pin management
         public void OnImportsSatisfied()
@@ -150,11 +152,34 @@ namespace VVVV.Nodes
         #endregion
 
         #region ctor & dispose
-        //public AudioSpeechRecognitionNode()
-        //{
-        //    // Create new engine
-        //    //reinitialize();
-        //}
+
+        [ImportingConstructor]
+        public AudioSpeechRecognitionNode()
+        {
+            // TODO: Select a speech recognizer that supports English by default:
+            // https://msdn.microsoft.com/en-us/library/system.speech.recognition.speechrecognitionengine.installedrecognizers(v=vs.110).aspx
+            var recognizers = SpeechRecognitionEngine.InstalledRecognizers();
+            bool[] isValidRecognizer = new bool[recognizers.Count];
+            int numValidRecognizers = 0;
+            for (int i = 0; i < recognizers.Count; ++i)
+            {
+                isValidRecognizer[i] = recognizers[i].Culture.Name.Length > 0;
+                numValidRecognizers += Convert.ToInt32(isValidRecognizer[i]);
+            }
+
+            var recognizersCultureNames = new string[numValidRecognizers];
+            int enumIndex = 0;
+            for (int i = 0; i < recognizers.Count; ++i)
+            {
+                if (isValidRecognizer[i])
+                {
+                    recognizersCultureNames[enumIndex] = recognizers[i].Culture.Name;
+                    enumIndex += 1;
+                }
+            }
+
+            EnumManager.UpdateEnum("CultureNameEnum", recognizersCultureNames[0], recognizersCultureNames);
+        }
 
         public void Dispose()
         {
@@ -195,7 +220,7 @@ namespace VVVV.Nodes
                     return;
                 }
 
-                FRecognizerForCultureFound[0] = true;                
+                FRecognizerForCultureFound[0] = true;
             }
             catch (System.Globalization.CultureNotFoundException)
             {
@@ -257,7 +282,7 @@ namespace VVVV.Nodes
 
         bool isGrammarLoaded()
         {
-            return recognizer != null && 
+            return recognizer != null &&
                    currentGrammar != null &&
                    recognizer.Grammars.Count > 0;
         }
@@ -275,7 +300,7 @@ namespace VVVV.Nodes
                     new grammarActionDelegate(grammarActionUnloadAllGrammars));
                 // Syncronization
                 Monitor.Wait(asyncActionMonitor);
-            } 
+            }
 
 
             // Reset the current grammar instance to null
@@ -292,7 +317,7 @@ namespace VVVV.Nodes
                 recognizer.UnloadAllGrammars();
                 // Syncronization
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
 
         public void grammarActionLoadPreparedGrammar()
@@ -373,12 +398,13 @@ namespace VVVV.Nodes
                     {
                         // Set of choices
                         Choices choices = new Choices(choicesStrings);
-                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat : min, maxRepeat : max);    
+                        // https://msdn.microsoft.com/en-us/library/system.speech.recognition.choices(v=vs.110).aspx
+                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat: min, maxRepeat: max);
                     }
                     else
                     {
                         // A single phrase
-                        grammarBuilder.Append(choicesStrings[0], minRepeat : min, maxRepeat : max);
+                        grammarBuilder.Append(choicesStrings[0], minRepeat: min, maxRepeat: max);
                     }
                     // Now we have at least one element in the grammar
                     grammarNotEmpty = true;
@@ -413,8 +439,8 @@ namespace VVVV.Nodes
         #endregion
 
         #region evalueate
-		public void Evaluate(int SpreadMax)
-		{
+        public void Evaluate(int SpreadMax)
+        {
             // Bang behavior
             if (onRecognizedBangFrameElapsed/* && FOnRecognized[0] == true*/)
             {
@@ -424,9 +450,9 @@ namespace VVVV.Nodes
             onRecognizedBangFrameElapsed = true;
 
             // Culture name has been changed
-            if (FCultureName.IsChanged)
+            if (FCultureNameEnum.IsChanged)
             {
-                reinitialize(FCultureName[0]);
+                reinitialize(FCultureNameEnum[0].Name);
 
                 if (recognizer != null)
                 {
@@ -517,7 +543,7 @@ namespace VVVV.Nodes
                 if (recognizer != null)
                 {
                     // Try to load grammar
-                    setGrammar(choicesStringsArray, isOptionalArray, FCultureName[0]);
+                    setGrammar(choicesStringsArray, isOptionalArray, FCultureNameEnum[0].Name);
                 }
                 else
                 {
@@ -537,14 +563,14 @@ namespace VVVV.Nodes
                 }
             }
 
-            if (FEnabled.IsChanged || FCultureName.IsChanged || grammarChanged)
+            if (FEnabled.IsChanged || FCultureNameEnum.IsChanged || grammarChanged)
             {
                 // Reset main output pins
                 FRecognitionResult[0] = "";
                 FOnRecognized[0] = false;
             }
-		}
-        
+        }
+
         #endregion
 
         #region speech event handlers
@@ -575,7 +601,7 @@ namespace VVVV.Nodes
 
                 // Syncronization
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
 
         // Handle the SpeechRecognized event.
@@ -620,7 +646,7 @@ namespace VVVV.Nodes
             {
                 // Syncronization
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
         #endregion
     }
