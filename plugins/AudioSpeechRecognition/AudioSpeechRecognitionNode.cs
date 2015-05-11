@@ -10,32 +10,42 @@
 
 #region usings
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
+using VVVV.Utils.Streams;
 using VVVV.Utils.VColor;
 using VVVV.Utils.VMath;
 
 using VVVV.Core.Logging;
 
 using Microsoft.Speech.Recognition;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 #endregion usings
 
 namespace VVVV.Nodes
 {
 	#region PluginInfo
-	[PluginInfo(Name = "SpeechRecognition", Category = "Microsoft Speech Platform Predefined Grammar",
-                Help = "Speech recognition for different languages with configurable predefined grammar", Tags = "speech")]
+	[PluginInfo(Name = "SpeechRecognition",
+                Category = "Microsoft Speech Platform",
+                Version = "Predefined Grammar",
+                Help = "Speech recognition for different languages with configurable predefined grammar",
+                Tags = "speech",
+                Author = "lev")]
 	#endregion PluginInfo
-	public class AudioSpeechRecognitionNode : IPluginEvaluate, IDisposable
+	public class AudioSpeechRecognitionNode : IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
 	{
 		#region fields & pins
-        [Input("Choices", IsPinGroup = true, Order = 4)]
-        IDiffSpread<ISpread<string>> FChoices;
+        //[Input("Choices", IsPinGroup = true)]
+        //public IDiffSpread<ISpread<string>> FChoices;
+        public Spread<IIOContainer<ISpread<string>>> FChoices = new Spread<IIOContainer<ISpread<string>>>();
+        public Spread<IIOContainer<ISpread<int>>> FRepetitionsNumber = new Spread<IIOContainer<ISpread<int>>>();
+
+        [Config("Choices Count", DefaultValue = 1, MinValue = 1)]
+        public IDiffSpread<int> FChoicesCount;        
 
         [Input("Culture Name", IsSingle = true, DefaultString = "en-US", Order = 1)]
         IDiffSpread<string> FCultureName;
@@ -45,6 +55,10 @@ namespace VVVV.Nodes
 
         [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.5, Order = 2)]
         IDiffSpread<double> FConfidenceThreshold;
+
+        // TODO
+        //[Output("Choices indices", IsPinGroup = true, Order = 4)]
+        //ISpread<ISpread<string>> FChoices;
 
         [Output("Recognition Result", IsSingle = true)]
 		public ISpread<String> FRecognitionResult;
@@ -66,6 +80,8 @@ namespace VVVV.Nodes
 
 		[Import()]
 		public ILogger FLogger;
+        [Import] ///!!!
+        public IIOFactory FIOFactory;
 
         // Speech recognition engine 
         private SpeechRecognitionEngine recognizer = null;
@@ -84,12 +100,46 @@ namespace VVVV.Nodes
         private Object asyncActionMonitor = new Object();
 		#endregion fields & pins
 
-        #region ctor & dispose
-        public AudioSpeechRecognitionNode()
+        #region pin management
+        public void OnImportsSatisfied()
         {
-            // Create new engine
-            //reinitialize();
+            FChoicesCount.Changed += HandleInputCountChanged;
         }
+
+        private void HandlePinCountChanged<T>(ISpread<int> countSpread, Spread<IIOContainer<T>> pinSpread,
+                                              Func<int, IOAttribute> ioAttributeFactory) where T : class
+        {
+            pinSpread.ResizeAndDispose(
+                countSpread[0],
+                (i) =>
+                {
+                    var ioAttribute = ioAttributeFactory(i + 1);
+                    return FIOFactory.CreateIOContainer<T>(ioAttribute);
+                }
+            );
+        }
+
+        InputAttribute createInputAttributeWithChangeCheck(int i)
+        {
+            var ia = new InputAttribute(string.Format("Choices {0}", i));
+            ia.CheckIfChanged = false;
+            return ia;
+        }
+
+        private void HandleInputCountChanged(IDiffSpread<int> sender)
+        {
+            //HandlePinCountChanged(sender, FChoices, (i) => new InputAttribute(string.Format("Choices {0}", i)));
+            HandlePinCountChanged(sender, FChoices, createInputAttributeWithChangeCheck);
+            HandlePinCountChanged(sender, FRepetitionsNumber, (i) => new InputAttribute(string.Format("Repetitions Number {0}", i)));
+        }
+        #endregion
+
+        #region ctor & dispose
+        //public AudioSpeechRecognitionNode()
+        //{
+        //    // Create new engine
+        //    //reinitialize();
+        //}
 
         public void Dispose()
         {
@@ -411,43 +461,55 @@ namespace VVVV.Nodes
             }
 
             // Grammar has been changed
-            if (FChoices.IsChanged)
+            // FIXME: this is always being executed :(
+            // Manual check of array equality?
+            //if (FChoices.IsChanged)
+            bool changedAtLeastOneChoices = false;
             {
+                int numChoices = FChoicesCount[0];
                 // Convert spread to array
                 string[][] choicesStringsArray = new string[FChoices.SliceCount][];
-                for (int i = 0; i < FChoices.SliceCount; ++i)
+                for (int i = 0; i < numChoices; ++i)
                 {
-                    choicesStringsArray[i] = new string[FChoices[i].SliceCount];
-                    for (int j = 0; j < FChoices[i].SliceCount; ++j)
+                    var choicesSpread = FChoices[i].IOObject;
+                    if (choicesSpread.IsChanged)
                     {
-                        choicesStringsArray[i][j] = FChoices[i][j];
+                        changedAtLeastOneChoices = true;
+                    }
+                    choicesStringsArray[i] = new string[choicesSpread.SliceCount];
+                    for (int j = 0; j < choicesSpread.SliceCount; ++j)
+                    {
+                        choicesStringsArray[i][j] = choicesSpread[j];
                     }
                 }
 
-                if (recognizer != null)
+                if (changedAtLeastOneChoices)
                 {
-                    // Try to load grammar
-                    setGrammar(choicesStringsArray, FCultureName[0]);
-                }
-                else
-                {
-                    if (FLogger != null)
+                    if (recognizer != null)
                     {
-                        FLogger.Log(LogType.Error,
-                                    "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
+                        // Try to load grammar
+                        setGrammar(choicesStringsArray, FCultureName[0]);
                     }
-                }
+                    else
+                    {
+                        if (FLogger != null)
+                        {
+                            FLogger.Log(LogType.Error,
+                                        "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
+                        }
+                    }
 
-                // Update "grammar loaded" output pin value 
-                FGrammarLoaded[0] = isGrammarLoaded();
+                    // Update "grammar loaded" output pin value 
+                    FGrammarLoaded[0] = isGrammarLoaded();
 
-                if (FEnabled[0] == true)
-                {
-                    startSpeechRecognition();
+                    if (FEnabled[0] == true)
+                    {
+                        startSpeechRecognition();
+                    }
                 }
             }
 
-            if (FEnabled.IsChanged || FCultureName.IsChanged || FChoices.IsChanged)
+            if (FEnabled.IsChanged || FCultureName.IsChanged || changedAtLeastOneChoices)
             {
                 // Reset main output pins
                 FRecognitionResult[0] = "";
