@@ -21,13 +21,15 @@ using VVVV.Core.Logging;
 
 using Microsoft.Speech.Recognition;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 #endregion usings
 
 namespace VVVV.Nodes
 {
 	#region PluginInfo
-	[PluginInfo(Name = "SpeechRecognition", Category = "Microsoft Speech Platform",
-                Help = "Speech recognition with configurable grammar", Tags = "speech")]
+	[PluginInfo(Name = "SpeechRecognition", Category = "Microsoft Speech Platform Predefined Grammar",
+                Help = "Speech recognition for different languages with configurable predefined grammar", Tags = "speech")]
 	#endregion PluginInfo
 	public class AudioSpeechRecognitionNode : IPluginEvaluate, IDisposable
 	{
@@ -56,6 +58,9 @@ namespace VVVV.Nodes
         [Output("On Recognized", IsSingle = true, IsBang = true)]
         public ISpread<bool> FOnRecognized;
 
+        [Output("Recognizer for culture found", IsSingle = true, IsToggle = true)]
+        public ISpread<bool> FRecognizerForCultureFound;
+
         [Output("Grammar Loaded", IsSingle = true, IsToggle = true)]
         public ISpread<bool> FGrammarLoaded;
 
@@ -69,13 +74,14 @@ namespace VVVV.Nodes
         // Support bang behavior for FOnRecognized pin
         private bool onRecognizedBangFrameElapsed = true;
         // True or false whether recognition has been started or not
-        private bool recognitionStarted = false;
+        private bool recognitionStarted;
         private bool RecognitionStarted
         {
             get { return recognitionStarted; }
             set { recognitionStarted = value; }
         }
         private Object startRecognitionLock = new Object();
+        private Object asyncActionMonitor = new Object();
 		#endregion fields & pins
 
         #region ctor & dispose
@@ -101,34 +107,30 @@ namespace VVVV.Nodes
         {
             // Dispose old recognizer if present
             Dispose();
+            // Reset all needed class memebers
+            recognitionStarted = false;
 
             try
             {
-                // Create SpeechRecognitionEngine instance
-                recognizer = new SpeechRecognitionEngine(
-                             new System.Globalization.CultureInfo(cultureName));
+                var culture = new System.Globalization.CultureInfo(cultureName);
 
-                // Add a handler for the speech recognized event
-                recognizer.SpeechRecognized +=
-                    new EventHandler<SpeechRecognizedEventArgs>(recognizer_SpeechRecognized);
-                // Attach other event handlers
-                recognizer.RecognizerUpdateReached +=
-                    new EventHandler<RecognizerUpdateReachedEventArgs>(recognizer_RecognizerUpdateReached);
-                recognizer.SpeechRecognitionRejected +=
-                    new EventHandler<SpeechRecognitionRejectedEventArgs>(recognizer_SpeechRecognitionRejected);
-                recognizer.SpeechDetected +=
-                    new EventHandler<SpeechDetectedEventArgs>(recognizer_SpeechDetected);
+                try
+                {
+                    // Create SpeechRecognitionEngine instance
+                    recognizer = new SpeechRecognitionEngine(culture);
+                }
+                catch (ArgumentException)
+                {
+                    if (FLogger != null)
+                    {
+                        FLogger.Log(LogType.Error,
+                                    "No recognized found for culture \"" + cultureName + "\"");
+                    }
+                    FRecognizerForCultureFound[0] = false;
+                    return;
+                }
 
-                // Set an empty grammar
-                // FIXME: it's possible to refactor here:
-                // don't start recognition until any grammar is provided using input pins
-                //setGrammar(new string[][] { new string[] { "default" } });
-
-                // Configure the input to the speech recognizer
-                recognizer.SetInputToDefaultAudioDevice();
-
-                // Start the recognition
-                //startRecognition();
+                FRecognizerForCultureFound[0] = true;                
             }
             catch (System.Globalization.CultureNotFoundException)
             {
@@ -137,48 +139,54 @@ namespace VVVV.Nodes
                     FLogger.Log(LogType.Error,
                                 "Culture with name \"" + cultureName + "\" not found");
                 }
-            }
-        }
-
-        void startRecognition()
-        {
-            if (recognizer == null)
-            {
-                if (FLogger != null)
-                {
-                    FLogger.Log(LogType.Error,
-                                "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
-                }
+                FRecognizerForCultureFound[0] = false;
                 return;
             }
 
+            // Add a handler for the speech recognized event
+            recognizer.SpeechRecognized +=
+                new EventHandler<SpeechRecognizedEventArgs>(recognizer_SpeechRecognized);
+            // Attach other event handlers
+            recognizer.RecognizerUpdateReached +=
+                new EventHandler<RecognizerUpdateReachedEventArgs>(recognizer_RecognizerUpdateReached);
+            recognizer.SpeechRecognitionRejected +=
+                new EventHandler<SpeechRecognitionRejectedEventArgs>(recognizer_SpeechRecognitionRejected);
+            recognizer.SpeechDetected +=
+                new EventHandler<SpeechDetectedEventArgs>(recognizer_SpeechDetected);
+            recognizer.SpeechDetected +=
+                new EventHandler<SpeechDetectedEventArgs>(recognizer_SpeechDetected);
+            recognizer.LoadGrammarCompleted +=
+                new EventHandler<LoadGrammarCompletedEventArgs>(recognizer_LoadGrammarCompleted);
+
+            // Set an empty grammar
+            // FIXME: it's possible to refactor here:
+            // don't start recognition until any grammar is provided using input pins
+            //setGrammar(new string[][] { new string[] { "default" } });
+
+            // Configure the input to the speech recognizer
+            recognizer.SetInputToDefaultAudioDevice();
+
+            // Start the recognition
+            //startRecognition();
+        }
+
+        void startSpeechRecognition()
+        {
             lock (startRecognitionLock)
             {
                 if (!RecognitionStarted && isGrammarLoaded())
                 {
                     // Start asynchronous, continuous speech recognition
                     recognizer.RecognizeAsync(RecognizeMode.Multiple);
-
                     RecognitionStarted = true;
                 }
             }
         }
 
-        void stopRecongition()
+        void stopSpeechRecongition()
         {
-            if (recognizer == null)
-            {
-                if (FLogger != null)
-                {
-                    FLogger.Log(LogType.Error,
-                                "stopRecongition(): SpeechRecognitionEngine instance hasn't been created yet");
-                }
-                return;
-            }
-
             // Terminate asynchronous recognition immediately
             recognizer.RecognizeAsyncCancel();
-
             RecognitionStarted = false;
         }
 
@@ -195,10 +203,16 @@ namespace VVVV.Nodes
             {
                 return;
             }
-            // Request an update and unload the Farm grammar.
-            recognizer.RequestRecognizerUpdate(
-                new grammarActionDelegate(grammarActionUnloadAllGrammars));
-            
+            lock (asyncActionMonitor)
+            {
+                // Request an update and unload the current grammar
+                recognizer.RequestRecognizerUpdate(
+                    new grammarActionDelegate(grammarActionUnloadAllGrammars));
+                // Syncronization
+                Monitor.Wait(asyncActionMonitor);
+            } 
+
+
             // Reset the current grammar instance to null
             currentGrammar = null;
         }
@@ -208,35 +222,76 @@ namespace VVVV.Nodes
 
         public void grammarActionUnloadAllGrammars()
         {
-            recognizer.UnloadAllGrammars();
+            lock (asyncActionMonitor)
+            {
+                recognizer.UnloadAllGrammars();
+                // Syncronization
+                Monitor.PulseAll(asyncActionMonitor);
+            } 
         }
 
         public void grammarActionLoadPreparedGrammar()
         {
             if (currentGrammar == null)
+            {
                 return;
-            recognizer.LoadGrammarAsync(currentGrammar);
+            }
+
+            //lock (asyncActionMonitor)
+            //{
+            // Request an update and unload the current grammar
+            //recognizer.LoadGrammarAsync(currentGrammar);
+            try
+            {
+                recognizer.LoadGrammar(currentGrammar);
+            }
+            catch (InvalidOperationException)
+            {
+                if (FLogger != null)
+                {
+                    FLogger.Log(LogType.Error,
+                                "The grammar isn't suitable for the current culture. Try either changing the culture name, or the grammar");
+                }
+            }
+
+            // Syncronization
+            //    Monitor.Wait(asyncActionMonitor);
+            //}
         }
 
-        public void grammarActionLoadPreparedGrammarAndStartRecognition()
-        {
-            // Load grammar
-            grammarActionLoadPreparedGrammar();
-            // Start recognition if this is initial grammar
-            // Won't affect anything if recognition already started
-            startRecognition();
-        }
+        //public void grammarActionLoadPreparedGrammarAndStartRecognition()
+        //{
+        //    // Load grammar
+        //    grammarActionLoadPreparedGrammar();
+        //    // Start recognition if this is initial grammar
+        //    // Won't affect anything if recognition already started
+        //    startRecognition();
+        //}
 
-        void setGrammar(string[][] choicesStringsArray, string cultureName, bool startRecognition)
+        void setGrammar(string[][] choicesStringsArray, string cultureName)
         {
             // Unload the old (current) grammar
             unloadCurrentGrammar();
 
             // Construct the new grammar
             GrammarBuilder grammarBuilder = new GrammarBuilder();
-            // Thanks to http://stackoverflow.com/a/25190005/1155958
-            // More examples: http://blog.qurbit.com/tutorials/building-grammars-in-net/
-            grammarBuilder.Culture = new System.Globalization.CultureInfo(cultureName);
+            try
+            {
+                // Thanks to http://stackoverflow.com/a/25190005/1155958
+                // More examples: http://blog.qurbit.com/tutorials/building-grammars-in-net/
+                grammarBuilder.Culture = new System.Globalization.CultureInfo(cultureName);
+            }
+            catch (System.Globalization.CultureNotFoundException)
+            {
+                if (FLogger != null)
+                {
+                    FLogger.Log(LogType.Error,
+                                "Culture with name \"" + cultureName + "\" not found");
+                }
+                FRecognizerForCultureFound[0] = false;
+                return;
+            }
+
             // Whether we have at least one phrase/choice to construct grammar
             bool grammarNotEmpty = false;
 
@@ -276,9 +331,14 @@ namespace VVVV.Nodes
                 currentGrammar = new Grammar(grammarBuilder);
                 currentGrammar.Name = "vvvv";
                 // Request an update and load the new grammar
-                var actionDelegate = startRecognition ? new grammarActionDelegate(grammarActionLoadPreparedGrammarAndStartRecognition) : 
-                                                        new grammarActionDelegate(grammarActionLoadPreparedGrammar);
-                recognizer.RequestRecognizerUpdate(actionDelegate);
+                //var actionDelegate = startRecognition ? new grammarActionDelegate(grammarActionLoadPreparedGrammarAndStartRecognition) : 
+                //                                        new grammarActionDelegate(grammarActionLoadPreparedGrammar);
+                lock (asyncActionMonitor)
+                {
+                    recognizer.RequestRecognizerUpdate(new grammarActionDelegate(grammarActionLoadPreparedGrammar));
+                    // Syncronization
+                    Monitor.Wait(asyncActionMonitor);
+                }
             }
         }
         #endregion
@@ -298,24 +358,60 @@ namespace VVVV.Nodes
             if (FCultureName.IsChanged)
             {
                 reinitialize(FCultureName[0]);
-                grammarActionLoadPreparedGrammarAndStartRecognition();
-            }
 
-            // Enable flag has been changed
-            if (FEnabled.IsChanged)
-            {
-                if (FEnabled[0] == true)
+                if (recognizer != null)
                 {
-                    startRecognition();
+                    lock (asyncActionMonitor)
+                    {
+                        recognizer.RequestRecognizerUpdate(new grammarActionDelegate(grammarActionLoadPreparedGrammar));
+                        // Syncronization
+                        Monitor.Wait(asyncActionMonitor);
+                    }
                 }
                 else
                 {
-                    stopRecongition();
+                    if (FLogger != null)
+                    {
+                        FLogger.Log(LogType.Error,
+                                    "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
+                    }
+                }
+
+                // Update "grammar loaded" output pin value 
+                FGrammarLoaded[0] = isGrammarLoaded();
+
+                if (FEnabled[0] == true)
+                {
+                    startSpeechRecognition();
+                }
+            }
+
+            // Enable pin has been changed
+            if (FEnabled.IsChanged)
+            {
+                if (recognizer != null)
+                {
+                    if (FEnabled[0] == true)
+                    {
+                        startSpeechRecognition();
+                    }
+                    else
+                    {
+                        stopSpeechRecongition();
+                    }
+                }
+                else
+                {
+                    if (FLogger != null)
+                    {
+                        FLogger.Log(LogType.Error,
+                                    "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
+                    }
                 }
             }
 
             // Grammar has been changed
-			if (FChoices.IsChanged)
+            if (FChoices.IsChanged)
             {
                 // Convert spread to array
                 string[][] choicesStringsArray = new string[FChoices.SliceCount][];
@@ -328,39 +424,68 @@ namespace VVVV.Nodes
                     }
                 }
 
-                // Try to load grammar
-                setGrammar(choicesStringsArray, FCultureName[0], FEnabled[0]);
+                if (recognizer != null)
+                {
+                    // Try to load grammar
+                    setGrammar(choicesStringsArray, FCultureName[0]);
+                }
+                else
+                {
+                    if (FLogger != null)
+                    {
+                        FLogger.Log(LogType.Error,
+                                    "startRecognition(): SpeechRecognitionEngine instance hasn't been created yet");
+                    }
+                }
 
-                // Reset output pins
+                // Update "grammar loaded" output pin value 
+                FGrammarLoaded[0] = isGrammarLoaded();
+
+                if (FEnabled[0] == true)
+                {
+                    startSpeechRecognition();
+                }
+            }
+
+            if (FEnabled.IsChanged || FCultureName.IsChanged || FChoices.IsChanged)
+            {
+                // Reset main output pins
                 FRecognitionResult[0] = "";
                 FOnRecognized[0] = false;
             }
 		}
+        
         #endregion
 
         #region speech event handlers
         // At the update, get the names and enabled status of the currently loaded grammars
         void recognizer_RecognizerUpdateReached(object sender, RecognizerUpdateReachedEventArgs e)
         {
-            // Recognized is ready for update: call the delegate method
-            grammarActionDelegate action = (grammarActionDelegate)e.UserToken;
-            action();
-
-            // Update "grammar loaded" pin value after update
-            FGrammarLoaded[0] = isGrammarLoaded();
-
-            if (FLogger != null)
+            lock (asyncActionMonitor)
             {
-                FLogger.Log(LogType.Debug, "Update reached:");
+                // Recognized is ready for update: call the delegate method
+                grammarActionDelegate action = (grammarActionDelegate)e.UserToken;
+                action();
 
-                string qualifier;
-                List<Grammar> grammars = new List<Grammar>(recognizer.Grammars);
-                foreach (Grammar g in grammars)
+                // Update "grammar loaded" pin value after update
+                //FGrammarLoaded[0] = isGrammarLoaded();
+
+                if (FLogger != null)
                 {
-                    qualifier = (g.Enabled) ? "enabled" : "disabled";
-                    FLogger.Log(LogType.Debug, "  {0} grammar is loaded and {1}.", g.Name, qualifier);
+                    FLogger.Log(LogType.Debug, "Update reached:");
+
+                    string qualifier;
+                    List<Grammar> grammars = new List<Grammar>(recognizer.Grammars);
+                    foreach (Grammar g in grammars)
+                    {
+                        qualifier = (g.Enabled) ? "enabled" : "disabled";
+                        FLogger.Log(LogType.Debug, "  {0} grammar is loaded and {1}.", g.Name, qualifier);
+                    }
                 }
-            }
+
+                // Syncronization
+                Monitor.PulseAll(asyncActionMonitor);
+            } 
         }
 
         // Handle the SpeechRecognized event.
@@ -397,6 +522,15 @@ namespace VVVV.Nodes
         void recognizer_SpeechDetected(object sender, SpeechDetectedEventArgs e)
         {
             FOnSpeechDetected[0] = true;
+        }
+
+        void recognizer_LoadGrammarCompleted(object sender, LoadGrammarCompletedEventArgs e)
+        {
+            lock (asyncActionMonitor)
+            {
+                // Syncronization
+                Monitor.PulseAll(asyncActionMonitor);
+            } 
         }
         #endregion
     }
