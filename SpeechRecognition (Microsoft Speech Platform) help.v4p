@@ -1,0 +1,1051 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.3.dtd" >
+   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Microsoft Speech Platform) help.v4p" systemname="SpeechRecognition (Microsoft Speech Platform) help" filename="C:\Users\Lev\projects\ivanrastr\speech_reco\SpeechRecognition\SpeechRecognition (Microsoft Speech Platform) help.v4p" scrollx="70" scrolly="1302">
+   <BOUNDS type="Window" left="1113" top="0" width="15988" height="7602">
+   </BOUNDS>
+   <PACK Name="Image" Version="0.1.0">
+   </PACK>
+   <PACK Name="addonpack" Version="33.3.0">
+   </PACK>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="7" exposed="0">
+   <BOUNDS type="Node" left="9989" top="4438" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="9989" top="4438" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|On Recognized|">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Renderer (TTY)" nodename="Renderer (TTY)" componentmode="InAWindow" id="12">
+   <BOUNDS type="Node" left="13380" top="345" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="13380" top="345" width="2400" height="1800">
+   </BOUNDS>
+   <BOUNDS type="Window" left="1309" top="6538" width="20258" height="5082">
+   </BOUNDS>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="14" exposed="0">
+   <BOUNDS type="Node" left="8477" top="4438" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="8477" top="4438" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|On Speech Detected|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="22" systemname="IOBox (Value Advanced)" exposed="0">
+   <BOUNDS type="Box" left="13286" top="4438" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="13286" top="4438" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Grammar Loaded|">
+   </PIN>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="27" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="7350" top="8064" width="675" height="945">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7350" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="3" visible="1" values="Show,Display,Find">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 1|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="26" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="8477" top="8064" width="675" height="945">
+   </BOUNDS>
+   <BOUNDS type="Node" left="8477" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="3" visible="1" values="all,some,any">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 2|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="25" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="10710" top="8064" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="10710" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="please">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 4|">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="24" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="9583" top="8064" width="900" height="915">
+   </BOUNDS>
+   <BOUNDS type="Node" left="9583" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="3" visible="1" values="mountians,lakes,hookers">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 3|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="32" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3843" top="2219" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3843" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Enabled">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="37" exposed="0">
+   <BOUNDS type="Node" left="8624" top="10395" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="8624" top="10395" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|On Recognized|">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="36" exposed="0">
+   <BOUNDS type="Node" left="9758" top="10388" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="9758" top="10388" width="480" height="480">
+   </BOUNDS>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|On Speech Detected|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="35" systemname="IOBox (Value Advanced)" exposed="0">
+   <BOUNDS type="Box" left="13342" top="10388" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="13342" top="10388" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Grammar Loaded|">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="39" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3990" top="8064" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3990" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Enabled">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="41" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="270" left="135" top="165" type="Node" width="915">
+   </BOUNDS>
+   <BOUNDS height="375" left="135" top="165" type="Box" width="5910">
+   </BOUNDS>
+   <BOUNDS height="160" left="300" top="300" type="Window" width="215">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|SpeechRecognition (Microsoft Speech Platform)|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="42" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="255" left="105" top="600" type="Node" width="570">
+   </BOUNDS>
+   <BOUNDS height="675" left="105" top="600" type="Box" width="4620">
+   </BOUNDS>
+   <BOUNDS height="160" left="300" top="300" type="Window" width="215">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|Recognize spoken speech using Microsoft Speech Platform API&cr;&lf;With configurable input grammar|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="String Type" slicecount="1" values="MultiLine">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="45" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="270" left="150" top="1320" type="Node" width="915">
+   </BOUNDS>
+   <BOUNDS height="375" left="150" top="1320" type="Box" width="6105">
+   </BOUNDS>
+   <BOUNDS height="160" left="300" top="300" type="Window" width="215">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|1. A simple choice consisting of several phrases|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE componentmode="InABox" id="46" nodename="IOBox (String)" systemname="IOBox (String)">
+   <BOUNDS height="270" left="150" top="6435" type="Node" width="915">
+   </BOUNDS>
+   <BOUNDS height="420" left="150" top="6435" type="Box" width="7680">
+   </BOUNDS>
+   <BOUNDS height="160" left="300" top="300" type="Window" width="215">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|2. More complex grammar: several choices combined into one|">
+   </PIN>
+   <PIN pinname="Output String" visible="0">
+   </PIN>
+   <PIN pinname="Show Grid" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="12">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="47" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="5964" top="2219" width="420" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5964" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.85">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Confidence Threshold|">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="48" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="4900" top="2219" width="798" height="238">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4900" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="ru-RU">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="en-US">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="49" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3843" top="5292" width="570" height="315">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3843" top="5292" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Confidence">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="10">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE systemname="S+H (String)" nodename="S+H (String)" componentmode="Hidden" id="50">
+   <BOUNDS type="Node" left="3843" top="3962" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Set" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="3" nodename="IOBox (String)" componentmode="InABox" systemname="IOBox (String)" exposed="0">
+   <BOUNDS type="Box" left="3843" top="4438" width="4500" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3843" top="4438" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="14">
+   </PIN>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Recognition Result|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="50" srcpinname="Output" dstnodeid="3" dstpinname="Input String">
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="51" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="7567" top="2219" width="1545" height="900">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7567" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="3" visible="1" values="Приветос,|Мэтт любит тебя|,|Мэтт любит убивать|">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Columns" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 1|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="53" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="4662" top="8064" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4662" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="en-US">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="en-US">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Output String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="54" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="5677" top="8064" width="375" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5677" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.7">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Confidence Threshold|">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="S+H (String)" nodename="S+H (String)" componentmode="Hidden" id="56">
+   <BOUNDS type="Node" left="3990" top="9975" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Set" visible="1" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="55" nodename="IOBox (String)" componentmode="InABox" systemname="IOBox (String)" exposed="0">
+   <BOUNDS type="Box" left="3990" top="10388" width="4500" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3990" top="10388" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Size" slicecount="1" values="14">
+   </PIN>
+   <PIN pinname="Input String" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Recognition Result|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="56" srcpinname="Output" dstnodeid="55" dstpinname="Input String">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="57" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="3990" top="11326" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="3990" top="11326" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Confidence">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="58" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="11123" top="4438" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11123" top="4438" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Recognizer for culture found|">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="59" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="11298" top="10388" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11298" top="10388" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Recognizer for culture found|">
+   </PIN>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Template (Value DynamicPins)" filename="%VVVV%\lib\nodes\plugins\DynamicPinsValueTemplate\DynamicPinsValueTemplate.csproj" nodename="Template (Value DynamicPins)" componentmode="Hidden" id="60">
+   <BOUNDS type="Node" left="15379" top="1435" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input Count" slicecount="1" values="5">
+   </PIN>
+   <PIN pinname="Output Count" slicecount="1" values="2">
+   </PIN>
+   </NODE>
+   <NODE systemname="Template (Enumerations Dynamic)" filename="%VVVV%\lib\nodes\plugins\TemplateEnumerations\TemplateEnumerations.csproj" nodename="Template (Enumerations Dynamic)" componentmode="Hidden" id="61">
+   <BOUNDS type="Node" left="15358" top="1008" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="UpdateEnum" slicecount="1" values="0">
+   </PIN>
+   <PIN pinname="Input" slicecount="1" values="one">
+   </PIN>
+   </NODE>
+   <NODE systemname="SpeechSynthesis (String)" filename="%VVVV%\addonpack\lib\nodes\plugins\SpeechSynthesis.dll" nodename="SpeechSynthesis (String)" componentmode="Hidden" id="63">
+   <BOUNDS type="Node" left="15932" top="4046" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Speak" visible="1">
+   </PIN>
+   <PIN pinname="Narrator" slicecount="1" values="|Microsoft David Desktop|">
+   </PIN>
+   <PIN pinname="Speed" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="64" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="15946" top="3346" width="693" height="210">
+   </BOUNDS>
+   <BOUNDS type="Node" left="15946" top="3346" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="yo">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="64" srcpinname="Output String" dstnodeid="63" dstpinname="Input">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="65" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="17080" top="3311" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="17080" top="3311" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="65" srcpinname="Y Output Value" dstnodeid="63" dstpinname="Speak">
+   </LINK>
+   <NODE systemname="Random (Value)" nodename="Random (Value)" componentmode="Hidden" id="66">
+   <BOUNDS type="Node" left="16842" top="2772" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Is Integer" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Scale" slicecount="1" values="100">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="66" srcpinname="Output" dstnodeid="63" dstpinname="Speed">
+   </LINK>
+   <NODE systemname="LFO (Animation)" nodename="LFO (Animation)" componentmode="Hidden" id="67">
+   <BOUNDS type="Node" left="17829" top="2632" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Change" visible="1">
+   </PIN>
+   <PIN pinname="Period" slicecount="1" values="0.5">
+   </PIN>
+   <PIN pinname="Pause" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="67" srcpinname="Change" dstnodeid="65" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="SpeechSynthesis (String)" filename="%VVVV%\addonpack\lib\nodes\plugins\SpeechSynthesis.dll" nodename="SpeechSynthesis (String)" componentmode="Hidden" id="72">
+   <BOUNDS type="Node" left="18529" top="4025" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Speak" visible="1">
+   </PIN>
+   <PIN pinname="Narrator" slicecount="1" values="|Microsoft Zira Desktop|">
+   </PIN>
+   <PIN pinname="Speed" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="71" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="18543" top="3325" width="693" height="210">
+   </BOUNDS>
+   <BOUNDS type="Node" left="18543" top="3325" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="man">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="71" srcpinname="Output String" dstnodeid="72" dstpinname="Input">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="70" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="19677" top="3290" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="19677" top="3290" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="70" srcpinname="Y Output Value" dstnodeid="72" dstpinname="Speak">
+   </LINK>
+   <NODE systemname="Random (Value)" nodename="Random (Value)" componentmode="Hidden" id="69">
+   <BOUNDS type="Node" left="19439" top="2751" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Is Integer" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Scale" slicecount="1" values="100">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="69" srcpinname="Output" dstnodeid="72" dstpinname="Speed">
+   </LINK>
+   <NODE systemname="LFO (Animation)" nodename="LFO (Animation)" componentmode="Hidden" id="68">
+   <BOUNDS type="Node" left="20426" top="2611" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Change" visible="1">
+   </PIN>
+   <PIN pinname="Period" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Phase" slicecount="1" values="0.3">
+   </PIN>
+   <PIN pinname="Pause" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="68" srcpinname="Change" dstnodeid="70" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="SpeechSynthesis (String)" filename="%VVVV%\addonpack\lib\nodes\plugins\SpeechSynthesis.dll" nodename="SpeechSynthesis (String)" componentmode="Hidden" id="77">
+   <BOUNDS type="Node" left="20916" top="4109" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input" visible="1">
+   </PIN>
+   <PIN pinname="Speak" visible="1">
+   </PIN>
+   <PIN pinname="Narrator" slicecount="1" values="|Microsoft Zira Desktop|">
+   </PIN>
+   <PIN pinname="Speed" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="76" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="20930" top="3409" width="693" height="210">
+   </BOUNDS>
+   <BOUNDS type="Node" left="20930" top="3409" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="cmon">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="76" srcpinname="Output String" dstnodeid="77" dstpinname="Input">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="75" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="22064" top="3374" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="22064" top="3374" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="75" srcpinname="Y Output Value" dstnodeid="77" dstpinname="Speak">
+   </LINK>
+   <NODE systemname="Random (Value)" nodename="Random (Value)" componentmode="Hidden" id="74">
+   <BOUNDS type="Node" left="21826" top="2835" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Is Integer" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Scale" slicecount="1" values="100">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="74" srcpinname="Output" dstnodeid="77" dstpinname="Speed">
+   </LINK>
+   <NODE systemname="LFO (Animation)" nodename="LFO (Animation)" componentmode="Hidden" id="73">
+   <BOUNDS type="Node" left="22813" top="2695" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Change" visible="1">
+   </PIN>
+   <PIN pinname="Period" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Phase" slicecount="1" values="0.3">
+   </PIN>
+   <PIN pinname="Pause" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="73" srcpinname="Change" dstnodeid="75" dstpinname="Y Input Value">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="78" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="19915" top="1414" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="19915" top="1414" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Pause - Pause - Pause|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="78" srcpinname="Y Output Value" dstnodeid="73" dstpinname="Pause">
+   </LINK>
+   <LINK srcnodeid="78" srcpinname="Y Output Value" dstnodeid="67" dstpinname="Pause">
+   </LINK>
+   <LINK srcnodeid="78" srcpinname="Y Output Value" dstnodeid="68" dstpinname="Pause">
+   </LINK>
+   <NODE systemname="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" filename="plugins\AudioSpeechRecognition\AudioSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" componentmode="Hidden" id="82">
+   <BOUNDS type="Node" left="3843" top="3458" width="5334" height="252">
+   </BOUNDS>
+   <PIN pinname="Choices Count" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Input Count" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Enabled" visible="1">
+   </PIN>
+   <PIN pinname="Choices 1" visible="1">
+   </PIN>
+   <PIN pinname="Culture Name" visible="1">
+   </PIN>
+   <PIN pinname="Confidence Threshold" visible="1">
+   </PIN>
+   <PIN pinname="Repetitions Number 1" visible="1">
+   </PIN>
+   <PIN pinname="Recognition Result" visible="1">
+   </PIN>
+   <PIN pinname="Confidence" visible="1">
+   </PIN>
+   <PIN pinname="On Speech Detected" visible="1">
+   </PIN>
+   <PIN pinname="On Recognized" visible="1">
+   </PIN>
+   <PIN pinname="Recognizer for culture found" visible="1">
+   </PIN>
+   <PIN pinname="Grammar Loaded" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="3843" top="3458">
+   </BOUNDS>
+   <PIN pinname="Choices 2" visible="1">
+   </PIN>
+   <PIN pinname="Is Optional 2" visible="1" pintype="Input" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="32" srcpinname="Y Output Value" dstnodeid="82" dstpinname="Enabled">
+   </LINK>
+   <LINK srcnodeid="51" srcpinname="Output String" dstnodeid="82" dstpinname="Choices 1" linkstyle="VHV">
+   <LINKPOINT x="7567" y="3234">
+   </LINKPOINT>
+   <LINKPOINT x="7063" y="3234">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="48" srcpinname="Output String" dstnodeid="82" dstpinname="Culture Name">
+   </LINK>
+   <LINK srcnodeid="47" srcpinname="Y Output Value" dstnodeid="82" dstpinname="Confidence Threshold">
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="Recognition Result" dstnodeid="50" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="Confidence" dstnodeid="49" dstpinname="Y Input Value" linkstyle="Bezier" hiddenwhenlocked="0">
+   <LINKPOINT x="5957" y="4498">
+   </LINKPOINT>
+   <LINKPOINT x="3899" y="4498">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="On Speech Detected" dstnodeid="14" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="7063" y="4071">
+   </LINKPOINT>
+   <LINKPOINT x="8477" y="4071">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="On Recognized" dstnodeid="7" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="4956" y="4071">
+   </LINKPOINT>
+   <LINKPOINT x="9989" y="4071">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="Recognizer for culture found" dstnodeid="58" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="8120" y="4071">
+   </LINKPOINT>
+   <LINKPOINT x="11123" y="4071">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="Grammar Loaded" dstnodeid="22" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="9177" y="4071">
+   </LINKPOINT>
+   <LINKPOINT x="13286" y="4071">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="82" srcpinname="On Recognized" dstnodeid="50" dstpinname="Set">
+   </LINK>
+   <NODE systemname="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" filename="plugins\AudioSpeechRecognition\AudioSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" componentmode="Hidden" id="84">
+   <BOUNDS type="Node" left="3990" top="9499" width="7882" height="252">
+   </BOUNDS>
+   <PIN pinname="Enabled" visible="1">
+   </PIN>
+   <PIN pinname="Choices 1" visible="1">
+   </PIN>
+   <PIN pinname="Culture Name" visible="1">
+   </PIN>
+   <PIN pinname="Confidence Threshold" visible="1">
+   </PIN>
+   <PIN pinname="Choices Count" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Choices 2" visible="1">
+   </PIN>
+   <PIN pinname="Choices 3" visible="1">
+   </PIN>
+   <PIN pinname="Choices 4" visible="1">
+   </PIN>
+   <PIN pinname="Is Optional 1" visible="-1" slicecount="1" values="0" pintype="Input">
+   </PIN>
+   <PIN pinname="Is Optional 2" visible="-1" slicecount="1" values="0" pintype="Input">
+   </PIN>
+   <PIN pinname="Is Optional 3" visible="-1" slicecount="1" values="0" pintype="Input">
+   </PIN>
+   <PIN pinname="Is Optional 4" visible="1" slicecount="1" values="1" pintype="Input">
+   </PIN>
+   <PIN pinname="Recognition Result" visible="1">
+   </PIN>
+   <PIN pinname="On Recognized" visible="1">
+   </PIN>
+   <PIN pinname="On Speech Detected" visible="1">
+   </PIN>
+   <PIN pinname="Confidence" visible="1">
+   </PIN>
+   <PIN pinname="Recognizer for culture found" visible="1">
+   </PIN>
+   <PIN pinname="Grammar Loaded" visible="1">
+   </PIN>
+   <BOUNDS type="Box" left="3990" top="9499">
+   </BOUNDS>
+   </NODE>
+   <LINK srcnodeid="39" srcpinname="Y Output Value" dstnodeid="84" dstpinname="Enabled">
+   </LINK>
+   <LINK srcnodeid="27" srcpinname="Output String" dstnodeid="84" dstpinname="Choices 1">
+   </LINK>
+   <LINK srcnodeid="53" srcpinname="Output String" dstnodeid="84" dstpinname="Culture Name" linkstyle="VHV">
+   <LINKPOINT x="4697" y="8901">
+   </LINKPOINT>
+   <LINKPOINT x="5159" y="8901">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="54" srcpinname="Y Output Value" dstnodeid="84" dstpinname="Confidence Threshold" linkstyle="VHV">
+   <LINKPOINT x="5719" y="8901">
+   </LINKPOINT>
+   <LINKPOINT x="6272" y="8901">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="26" srcpinname="Output String" dstnodeid="84" dstpinname="Choices 2">
+   </LINK>
+   <LINK srcnodeid="24" srcpinname="Output String" dstnodeid="84" dstpinname="Choices 3">
+   </LINK>
+   <LINK srcnodeid="25" srcpinname="Output String" dstnodeid="84" dstpinname="Choices 4">
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="Recognition Result" dstnodeid="56" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="On Recognized" dstnodeid="56" dstpinname="Set" linkstyle="Bezier">
+   <LINKPOINT x="5369" y="9860">
+   </LINKPOINT>
+   <LINKPOINT x="4403" y="9860">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="On Speech Detected" dstnodeid="36" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="8743" y="10066">
+   </LINKPOINT>
+   <LINKPOINT x="9758" y="10066">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="On Recognized" dstnodeid="37" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="5390" y="10070">
+   </LINKPOINT>
+   <LINKPOINT x="8624" y="10070">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="Confidence" dstnodeid="57" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="6678" y="10535">
+   </LINKPOINT>
+   <LINKPOINT x="4046" y="10535">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="Recognizer for culture found" dstnodeid="59" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="10304" y="10066">
+   </LINKPOINT>
+   <LINKPOINT x="11298" y="10066">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="84" srcpinname="Grammar Loaded" dstnodeid="35" dstpinname="Y Input Value" linkstyle="Bezier">
+   <LINKPOINT x="11872" y="10066">
+   </LINKPOINT>
+   <LINKPOINT x="13342" y="10066">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (String)" componentmode="InABox" id="85" systemname="IOBox (String)">
+   <BOUNDS type="Box" left="9261" top="2219" width="693" height="210">
+   </BOUNDS>
+   <BOUNDS type="Node" left="9261" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input String" slicecount="1" visible="1" values="чел">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="File Mask" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Maximum Characters" slicecount="1" values="-1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Choices 2|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="85" srcpinname="Output String" dstnodeid="82" dstpinname="Choices 2" linkstyle="VHV">
+   <LINKPOINT x="9261" y="3255">
+   </LINKPOINT>
+   <LINKPOINT x="8120" y="3255">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="86" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="10080" top="2219" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="10080" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Is Optional 2|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="86" srcpinname="Y Output Value" dstnodeid="82" dstpinname="Is Optional 2" linkstyle="VHV">
+   <LINKPOINT x="10080" y="3350">
+   </LINKPOINT>
+   <LINKPOINT x="9177" y="3350">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="88" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="11830" top="8064" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="11830" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Is Optional 4|">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="88" srcpinname="Y Output Value" dstnodeid="84" dstpinname="Is Optional 4">
+   </LINK>
+   </PATCH>
