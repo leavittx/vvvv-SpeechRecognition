@@ -36,22 +36,24 @@ using Microsoft.Speech.Recognition;
 
 namespace VVVV.Nodes
 {
-	#region PluginInfo
-	[PluginInfo(Name = "SpeechRecognition",
+    #region PluginInfo
+    [PluginInfo(Name = "SpeechRecognition",
                 Category = "Microsoft Speech Platform",
-                Version = "Predefined Grammar",
+                Version = "",
                 Help = "Speech recognition for different languages with configurable predefined grammar",
                 Tags = "speech",
                 Author = "lev")]
-	#endregion PluginInfo
-	public class AudioSpeechRecognitionNode : IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
-	{
-		#region input pins
+    #endregion PluginInfo
+
+    public class MicrosoftSpeechPlatformSpeechRecognitionNode :
+        IPluginEvaluate, IPartImportsSatisfiedNotification, IDisposable
+    {
+        #region input pins
 
         [Input("Enabled", IsSingle = true, DefaultBoolean = true, Order = 0)]
         IDiffSpread<bool> FEnabled;
 
-        [Input("Culture Name", EnumName = "CultureNameEnum", Order=1)]
+        [Input("Culture Name", EnumName = "CultureNameEnum", Order = 1)]
         public IDiffSpread<EnumEntry> FCultureNameEnum;
 
         [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.7, Order = 2)]
@@ -61,7 +63,7 @@ namespace VVVV.Nodes
         public Spread<IIOContainer<ISpread<bool>>> FIsOptional = new Spread<IIOContainer<ISpread<bool>>>();
 
         [Config("Choices Count", DefaultValue = 1, MinValue = 1)]
-        public IDiffSpread<int> FChoicesCount;        
+        public IDiffSpread<int> FChoicesCount;
 
         #endregion
 
@@ -72,7 +74,7 @@ namespace VVVV.Nodes
         //ISpread<ISpread<string>> FChoices;
 
         [Output("Recognition Result", IsSingle = true)]
-		public ISpread<String> FRecognitionResult;
+        public ISpread<String> FRecognitionResult;
 
         [Output("On Recognized", IsSingle = true, IsBang = true)]
         public ISpread<bool> FOnRecognized;
@@ -94,8 +96,8 @@ namespace VVVV.Nodes
         #region imports
 
         [Import()]
-		public ILogger FLogger;
-        [Import] 
+        public ILogger FLogger;
+        [Import]
         public IIOFactory FIOFactory;
 
         #endregion
@@ -118,7 +120,7 @@ namespace VVVV.Nodes
         }
         private Object startRecognitionLock = new Object();
         private Object asyncActionMonitor = new Object();
-		#endregion fields & pins
+        #endregion fields & pins
 
         #region pin management
 
@@ -170,7 +172,7 @@ namespace VVVV.Nodes
         #region ctor & dispose
 
         [ImportingConstructor]
-        public AudioSpeechRecognitionNode()
+        public MicrosoftSpeechPlatformSpeechRecognitionNode()
         {
             // Populate enum with available for speech recognition cultures
             // TODO: Select a speech recognizer that supports English by default:
@@ -194,8 +196,8 @@ namespace VVVV.Nodes
                     enumIndex += 1;
                 }
             }
-            
-            EnumManager.UpdateEnum("CultureNameEnum", recognizersCultureNames[0], recognizersCultureNames);  
+
+            EnumManager.UpdateEnum("CultureNameEnum", recognizersCultureNames[0], recognizersCultureNames);
         }
 
         public void Dispose()
@@ -256,7 +258,7 @@ namespace VVVV.Nodes
                 {
                     logError("No recognized found for culture \"" + cultureName + "\"");
                     return;
-                }                
+                }
             }
             catch (System.Globalization.CultureNotFoundException)
             {
@@ -300,7 +302,7 @@ namespace VVVV.Nodes
                 // Terminate asynchronous recognition immediately
                 recognizer.RecognizeAsyncCancel();
                 RecognitionStarted = false;
-        
+
             }
         }
         private bool RecognizerPresent
@@ -333,7 +335,7 @@ namespace VVVV.Nodes
                     new grammarActionDelegate(grammarActionUnloadAllGrammars));
                 // Syncronization
                 Monitor.Wait(asyncActionMonitor);
-            } 
+            }
             currentGrammar = null;
         }
 
@@ -347,7 +349,7 @@ namespace VVVV.Nodes
                 recognizer.UnloadAllGrammars();
                 // Syncronization
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
 
         public void grammarActionLoadPreparedGrammar()
@@ -412,12 +414,12 @@ namespace VVVV.Nodes
                         // Set of choices
                         Choices choices = new Choices(choicesStrings);
                         // https://msdn.microsoft.com/en-us/library/system.speech.recognition.choices(v=vs.110).aspx
-                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat : min, maxRepeat : max);    
+                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat: min, maxRepeat: max);
                     }
                     else
                     {
                         // A single phrase
-                        grammarBuilder.Append(choicesStrings[0], minRepeat : min, maxRepeat : max);
+                        grammarBuilder.Append(choicesStrings[0], minRepeat: min, maxRepeat: max);
                     }
                     // Now we have at least one element in the grammar
                     grammarNotEmpty = true;
@@ -435,7 +437,7 @@ namespace VVVV.Nodes
                 // Create a Grammar object from the GrammarBuilder and load it to the recognizer
                 currentGrammar = new Grammar(grammarBuilder);
                 currentGrammar.Name = "vvvv";
-               
+
                 lock (asyncActionMonitor)
                 {
                     // Request an update and load the new grammar
@@ -448,8 +450,8 @@ namespace VVVV.Nodes
         #endregion
 
         #region evaluate
-		public void Evaluate(int SpreadMax)
-		{
+        public void Evaluate(int SpreadMax)
+        {
             // Bang behavior
             // FIXME: second statement needed or not?
             if (onRecognizedBangFrameElapsed/* && FOnRecognized[0] == true*/)
@@ -560,12 +562,12 @@ namespace VVVV.Nodes
                 FOnRecognized[0] = false;
                 FConfidence[0] = 0.0;
             }
-		}
-        
+        }
+
         #endregion
 
         #region speech event handlers
-        
+
         void recognizer_RecognizerUpdateReached(object sender, RecognizerUpdateReachedEventArgs e)
         {
             // Monitor actions should be performed inside a lock()
@@ -588,7 +590,7 @@ namespace VVVV.Nodes
 
                 // Tell the main process that the asyncronious action is finished
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
 
         void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
@@ -626,7 +628,7 @@ namespace VVVV.Nodes
             {
                 // Tell the main process that the asyncronious grammar loading is finished
                 Monitor.PulseAll(asyncActionMonitor);
-            } 
+            }
         }
         #endregion
     }

@@ -1,10 +1,10 @@
-<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.3.dtd" >
-   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Microsoft Speech Platform) help.v4p" systemname="SpeechRecognition (Microsoft Speech Platform) help" filename="C:\Users\Lev\projects\ivanrastr\speech_reco\SpeechRecognition\SpeechRecognition (Microsoft Speech Platform) help.v4p" scrollx="350" scrolly="0">
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.7.dtd" >
+   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Microsoft Speech Platform) help.v4p" systemname="SpeechRecognition (Microsoft Speech Platform) help" filename="C:\Users\Lev\projects\ivanrastr\speech_reco\SpeechRecognition\SpeechRecognition (Microsoft Speech Platform) help.v4p" scrollx="1736" scrolly="0">
    <BOUNDS type="Window" left="1113" top="0" width="15988" height="7602">
    </BOUNDS>
    <PACK Name="Image" Version="0.1.0">
    </PACK>
-   <PACK Name="addonpack" Version="33.3.0">
+   <PACK Name="addonpack" Version="33.7.0">
    </PACK>
    <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="7" exposed="0">
    <BOUNDS type="Node" left="9989" top="4438" width="100" height="100">
@@ -267,7 +267,7 @@
    </BOUNDS>
    <BOUNDS height="160" left="300" top="300" type="Window" width="215">
    </BOUNDS>
-   <PIN pinname="Input String" slicecount="1" visible="0" values="|Recognize spoken speech using Microsoft Speech Platform API&cr;&lf;With configurable input grammar|">
+   <PIN pinname="Input String" slicecount="1" visible="0" values="|Recognize spoken speech using Microsoft Speech Platform&cr;&lf;With configurable input grammar|">
    </PIN>
    <PIN pinname="Output String" visible="0">
    </PIN>
@@ -469,7 +469,7 @@
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Recognizer for culture found|">
    </PIN>
-   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="1">
    </PIN>
    </NODE>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="59" systemname="IOBox (Value Advanced)">
@@ -487,7 +487,7 @@
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Recognizer for culture found|">
    </PIN>
-   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="0">
+   <PIN pinname="Y Input Value" visible="1" slicecount="1" values="1">
    </PIN>
    </NODE>
    <NODE systemname="Template (Value DynamicPins)" filename="%VVVV%\lib\nodes\plugins\DynamicPinsValueTemplate\DynamicPinsValueTemplate.csproj" nodename="Template (Value DynamicPins)" componentmode="Hidden" id="60">
@@ -858,7 +858,27 @@
    </NODE>
    <LINK srcnodeid="90" srcpinname="Y Output Value" dstnodeid="61" dstpinname="UpdateEnum">
    </LINK>
-   <NODE systemname="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" filename="plugins\NoDictationMicrosoftSpeechPlatformSpeechRecognition\NoDictationMicrosoftSpeechPlatformSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" componentmode="Hidden" id="82">
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="91" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="4893" top="2219" width="791" height="224">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4893" top="2219" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" visible="1" values="ru-RU">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="92" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="4627" top="8064" width="679" height="224">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4627" top="8064" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="1" visible="1" values="en-US">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
+   </PIN>
+   </NODE>
+   <NODE systemname="SpeechRecognition (Microsoft Speech Platform)" filename="plugins\MicrosoftSpeechPlatformSpeechRecognition\MicrosoftSpeechPlatformSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform)" componentmode="Hidden" id="82">
    <BOUNDS type="Node" left="3843" top="3458" width="5334" height="252">
    </BOUNDS>
    <PIN pinname="Choices Count" slicecount="1" values="2">
@@ -950,7 +970,9 @@
    <LINKPOINT x="9177" y="3350">
    </LINKPOINT>
    </LINK>
-   <NODE systemname="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" filename="plugins\NoDictationMicrosoftSpeechPlatformSpeechRecognition\NoDictationMicrosoftSpeechPlatformSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform Predefined Grammar)" componentmode="Hidden" id="84">
+   <LINK srcnodeid="91" srcpinname="Output Enum" dstnodeid="82" dstpinname="Culture Name">
+   </LINK>
+   <NODE systemname="SpeechRecognition (Microsoft Speech Platform)" filename="plugins\MicrosoftSpeechPlatformSpeechRecognition\MicrosoftSpeechPlatformSpeechRecognition.csproj" nodename="SpeechRecognition (Microsoft Speech Platform)" componentmode="Hidden" id="84">
    <BOUNDS type="Node" left="3990" top="9499" width="7882" height="252">
    </BOUNDS>
    <PIN pinname="Enabled" visible="1">
@@ -1048,28 +1070,6 @@
    </LINK>
    <LINK srcnodeid="88" srcpinname="Y Output Value" dstnodeid="84" dstpinname="Is Optional 4">
    </LINK>
-   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="91" systemname="IOBox (Enumerations)">
-   <BOUNDS type="Box" left="4893" top="2219" width="791" height="224">
-   </BOUNDS>
-   <BOUNDS type="Node" left="4893" top="2219" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Input Enum" slicecount="1" visible="1" values="ru-RU">
-   </PIN>
-   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="91" srcpinname="Output Enum" dstnodeid="82" dstpinname="Culture Name">
-   </LINK>
-   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="92" systemname="IOBox (Enumerations)">
-   <BOUNDS type="Box" left="4627" top="8064" width="679" height="224">
-   </BOUNDS>
-   <BOUNDS type="Node" left="4627" top="8064" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Input Enum" slicecount="1" visible="1" values="en-US">
-   </PIN>
-   <PIN pinname="Descriptive Name" slicecount="1" values="|Culture Name|">
-   </PIN>
-   </NODE>
    <LINK srcnodeid="92" srcpinname="Output Enum" dstnodeid="84" dstpinname="Culture Name" linkstyle="VHV">
    <LINKPOINT x="4662" y="8894">
    </LINKPOINT>
