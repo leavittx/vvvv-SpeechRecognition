@@ -450,6 +450,7 @@ namespace VVVV.Nodes
         #endregion
 
         #region evaluate
+
         public void Evaluate(int SpreadMax)
         {
             // Bang behavior
