@@ -1,0 +1,7 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.7.dtd" >
+   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Windows Desktop Speech Dictation) help.v4p" systemname="SpeechRecognition (Windows Desktop Speech Dictation) help" filename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Windows Desktop Speech Dictation) help.v4p">
+   <BOUNDS type="Window" left="9772" top="2975" width="9000" height="6000">
+   </BOUNDS>
+   <PACK Name="addonpack" Version="33.7.0">
+   </PACK>
+   </PATCH>
