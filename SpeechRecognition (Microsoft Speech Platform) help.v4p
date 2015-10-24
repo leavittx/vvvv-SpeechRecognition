@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.7.dtd" >
-   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Microsoft Speech Platform) help.v4p" systemname="SpeechRecognition (Microsoft Speech Platform) help" filename="C:\Users\Lev\projects\ivanrastr\speech_reco\SpeechRecognition\SpeechRecognition (Microsoft Speech Platform) help.v4p" scrollx="1610" scrolly="0">
+   <PATCH nodename="C:\Users\lev\projects\SpeechReco\SpeechRecognition (Microsoft Speech Platform)\SpeechRecognition (Microsoft Speech Platform) help.v4p" systemname="SpeechRecognition (Microsoft Speech Platform) help" filename="C:\Users\Lev\projects\ivanrastr\speech_reco\SpeechRecognition\SpeechRecognition (Microsoft Speech Platform) help.v4p" scrollx="392" scrolly="0">
    <BOUNDS type="Window" left="1113" top="0" width="15988" height="7602">
    </BOUNDS>
    <PACK Name="Image" Version="0.1.0">

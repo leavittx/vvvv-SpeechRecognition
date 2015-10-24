@@ -1,20 +1,4 @@
 // By Lev Panov, 2015 (lev.panov@gmail.com)
-// Further work
-// + 1. Repeated/optional phrases https://msdn.microsoft.com/en-us/library/ms576572(v=vs.110).aspx
-// + Possible to arrange repetition count pins in a way similar to group (ex9 priority)
-// 2. Semantic information
-// 3. Free text dictation: https://msdn.microsoft.com/en-us/library/ms576565(v=vs.110).aspx
-// Not possible with server-side Microsoft.Speech, need to use System.Speech
-// + 4. Different languages
-// 5. Configurable single/multiple recognition modes
-// 6. Output phrase index (for complex grammar - slice of indices for each choice?)
-// http://vvvv.org/documentation/dynamic-plugins-reference
-// http://vvvv.org/forum/dynamic-amount-of-input-pins-in-a-plugin-(like-stallone)?full=1
-// https://searchcode.com/codesearch/view/26524082/
-// http://vvvv.org/pluginspecs/html/N_VVVV_PluginInterfaces_V2.htm
-// http://stackoverflow.com/questions/12353605/speech-recognition-in-c-sharp-with-sapi-5-4-or-ms-speech-sdk-v11-using-a-memorys
-// http://stackoverflow.com/questions/15258987/does-this-system-speech-recognition-recognition-code-make-use-of-speech-trainin
-// http://stackoverflow.com/questions/2977338/what-is-the-difference-between-system-speech-recognition-and-microsoft-speech-re
 
 #region usings
 using System;
@@ -40,7 +24,7 @@ namespace VVVV.Nodes
     [PluginInfo(Name = "SpeechRecognition",
                 Category = "Windows Desktop Speech",
                 Version = "Dictation",
-                Help = "Speech recognition using dictation in different languages",
+                Help = "Speech recognition using dictation",
                 Tags = "speech",
                 Author = "lev")]
     #endregion PluginInfo
@@ -56,7 +40,7 @@ namespace VVVV.Nodes
         [Input("Culture Name", EnumName = "CultureNameEnum", Order = 1)]
         public IDiffSpread<EnumEntry> FCultureNameEnum;
 
-        [Input("Confidence Threshold", IsSingle = true, DefaultValue = 0.7, Order = 2)]
+        [Input("Confidence Threshold", IsSingle = true, DefaultValue = 1.0, Order = 2)]
         IDiffSpread<double> FConfidenceThreshold;
 
         public Spread<IIOContainer<ISpread<string>>> FChoices = new Spread<IIOContainer<ISpread<string>>>();
@@ -400,49 +384,58 @@ namespace VVVV.Nodes
             // Whether we have at least one phrase/choice to construct grammar
             bool grammarNotEmpty = false;
 
-            // Append all choices strings to the new grammar
-            for (int i = 0; i < choicesStringsArray.Length; ++i)
-            {
-                string[] choicesStrings = choicesStringsArray[i];
-                bool isOptional = isOptionalArray[i];
+            GrammarBuilder dictation = new GrammarBuilder();
+            dictation.AppendDictation();
 
-                try
-                {
-                    int min = isOptional ? 0 : 1, max = 1;
-                    if (choicesStrings.Length > 1)
-                    {
-                        // Set of choices
-                        Choices choices = new Choices(choicesStrings);
-                        // https://msdn.microsoft.com/en-us/library/system.speech.recognition.choices(v=vs.110).aspx
-                        grammarBuilder.Append(new GrammarBuilder(choices), minRepeat: min, maxRepeat: max);
-                    }
-                    else
-                    {
-                        // A single phrase
-                        grammarBuilder.Append(choicesStrings[0], minRepeat: min, maxRepeat: max);
-                    }
-                    // Now we have at least one element in the grammar
-                    grammarNotEmpty = true;
-                }
-                catch (ArgumentException)
-                {
-                    logError("Invalid argument for grammar builder");
-                    continue;
-                }
-            }
+            grammarBuilder.Append(new SemanticResultKey("StartDictation", new SemanticResultValue("Start Dictation", true)));
+            grammarBuilder.Append(new SemanticResultKey("DictationInput", dictation));
+            grammarBuilder.Append(new SemanticResultKey("StopDictation", new SemanticResultValue("Stop Dictation", false)));
+
+            //grammarBuilder.AppendDictation();
+
+            // Append all choices strings to the new grammar
+            //for (int i = 0; i < choicesStringsArray.Length; ++i)
+            //{
+            //    string[] choicesStrings = choicesStringsArray[i];
+            //    bool isOptional = isOptionalArray[i];
+
+            //    try
+            //    {
+            //        int min = isOptional ? 0 : 1, max = 1;
+            //        if (choicesStrings.Length > 1)
+            //        {
+            //            // Set of choices
+            //            Choices choices = new Choices(choicesStrings);
+            //            // https://msdn.microsoft.com/en-us/library/system.speech.recognition.choices(v=vs.110).aspx
+            //            grammarBuilder.Append(new GrammarBuilder(choices), minRepeat: min, maxRepeat: max);
+            //        }
+            //        else
+            //        {
+            //            // A single phrase
+            //            grammarBuilder.Append(choicesStrings[0], minRepeat: min, maxRepeat: max);
+            //        }
+            //        // Now we have at least one element in the grammar
+            //        grammarNotEmpty = true;
+            //    }
+            //    catch (ArgumentException)
+            //    {
+            //        logError("Invalid argument for grammar builder");
+            //        continue;
+            //    }
+            //}
 
             // Construct the new grammar only if there is at least one element for it
-            if (grammarNotEmpty)
+            //if (grammarNotEmpty)
             {
                 // Create a Grammar object from the GrammarBuilder and load it to the recognizer
                 currentGrammar = new Grammar(grammarBuilder);
-                currentGrammar.Name = "vvvv";
+                currentGrammar.Name = "dictation";
 
                 lock (asyncActionMonitor)
                 {
                     // Request an update and load the new grammar
                     recognizer.RequestRecognizerUpdate(new grammarActionDelegate(grammarActionLoadPreparedGrammar));
-                    // Syncronization
+                    // Synchronization
                     Monitor.Wait(asyncActionMonitor);
                 }
             }
@@ -473,7 +466,7 @@ namespace VVVV.Nodes
                     lock (asyncActionMonitor)
                     {
                         recognizer.RequestRecognizerUpdate(new grammarActionDelegate(grammarActionLoadPreparedGrammar));
-                        // Syncronization
+                        // Synchronization
                         Monitor.Wait(asyncActionMonitor);
                     }
                 }
